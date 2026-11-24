@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/jonheaven/at/main/schemas/register.schema.json",
+  "title": "at handle register inscription body",
+  "description": "JSON inscription body only. Plain text @handle needs no JSON. The same bytes in an OP_RETURN, including AT1|reg|…, are not a registration. p must be at — dns and dx bodies are not handles.",
+  "type": "object",
+  "required": ["p", "op", "name"],
+  "properties": {
+    "p": { "const": "at" },
+    "op": {
+      "enum": ["register", "reg"],
+      "description": "reg is an alias of register. config and primary are different inscriptions."
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 16,
+      "description": "@ plus 1..15 of [a-z0-9_], or the localpart alone. Canonical form adds @ and lowercases. A dot is invalid."
+    },
+    "address": { "type": "string" },
+    "url": { "type": "string" },
+    "website": { "type": "string" },
+    "site": { "type": "string" },
+    "insc": { "type": "string" },
+    "html": { "type": "string" },
+    "avatar": { "type": "string" },
+    "content": { "type": "string", "maxLength": 280 },
+    "cname": { "type": "string", "description": "Another @ handle, not a DNS name." },
+    "nostr": { "type": "string" },
+    "lightning": { "type": "string", "description": "user@host or lnurl1…. A record value, not a second registration." },
+    "lud16": { "type": "string" },
+    "addresses": {
+      "type": "array",
+      "maxItems": 8,
+      "items": { "type": "string" }
+    },
+    "txt": {
+      "type": ["object", "null"]
+    },
+    "bitworkc": { "type": "string" },
+    "bitworkr": { "type": "string" }
+  },
+  "additionalProperties": false
+}

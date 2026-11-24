@@ -1,0 +1,161 @@
+{
+  "protocol": "at",
+  "version": "1",
+  "notes": "Plain text must be the entire body (one trailing newline allowed). JSON name may omit @. A dot, a DNS marker, or a DX marker never registers a handle.",
+  "vectors": [
+    {
+      "id": "plain-jon",
+      "ok": true,
+      "op": "register",
+      "body": "@jon",
+      "handle": "@jon"
+    },
+    {
+      "id": "plain-trailing-newline",
+      "ok": true,
+      "op": "register",
+      "body": "@jon\n",
+      "handle": "@jon"
+    },
+    {
+      "id": "plain-case-fold",
+      "ok": true,
+      "op": "register",
+      "body": "@Jon",
+      "handle": "@jon"
+    },
+    {
+      "id": "plain-fullwidth",
+      "ok": true,
+      "op": "register",
+      "body": "＠ｊｏｎ",
+      "handle": "@jon"
+    },
+    {
+      "id": "plain-underscore",
+      "ok": true,
+      "op": "register",
+      "body": "@_jon",
+      "handle": "@_jon"
+    },
+    {
+      "id": "plain-len-15",
+      "ok": true,
+      "op": "register",
+      "body": "@abcdefghijklmno",
+      "handle": "@abcdefghijklmno"
+    },
+    {
+      "id": "json-register-with-at",
+      "ok": true,
+      "op": "register",
+      "body": "{\"p\":\"at\",\"op\":\"register\",\"name\":\"@jon\"}",
+      "handle": "@jon"
+    },
+    {
+      "id": "json-reg-alias-without-at",
+      "ok": true,
+      "op": "register",
+      "body": "{\"p\":\"at\",\"op\":\"reg\",\"name\":\"jon\"}",
+      "handle": "@jon"
+    },
+    {
+      "id": "json-config",
+      "ok": true,
+      "op": "config",
+      "body": "{\"p\":\"at\",\"op\":\"config\",\"name\":\"@jon\",\"content\":\"hi\"}",
+      "handle": "@jon",
+      "content": "hi"
+    },
+    {
+      "id": "json-update-alias",
+      "ok": true,
+      "op": "config",
+      "body": "{\"p\":\"at\",\"op\":\"upd\",\"name\":\"jon\",\"url\":\"https://dogecoin.dog\"}",
+      "handle": "@jon",
+      "url": "https://dogecoin.dog"
+    },
+    {
+      "id": "json-primary",
+      "ok": true,
+      "op": "primary",
+      "body": "{\"p\":\"at\",\"op\":\"primary\",\"name\":\"@jon\"}",
+      "handle": "@jon"
+    },
+    {
+      "id": "bare-word",
+      "ok": false,
+      "body": "jon"
+    },
+    {
+      "id": "second-token",
+      "ok": false,
+      "body": "@jon is mine"
+    },
+    {
+      "id": "mention-in-prose",
+      "ok": false,
+      "body": "follow @jon on chain"
+    },
+    {
+      "id": "dotted",
+      "ok": false,
+      "body": "@jon.doge"
+    },
+    {
+      "id": "dns-plain",
+      "ok": false,
+      "body": "jon.doge"
+    },
+    {
+      "id": "dns-json",
+      "ok": false,
+      "body": "{\"p\":\"dns\",\"op\":\"register\",\"name\":\"@jon\"}"
+    },
+    {
+      "id": "dx-json",
+      "ok": false,
+      "body": "{\"p\":\"dx\",\"op\":\"register\",\"x_handle\":\"@jon\",\"tweet_id\":\"1\"}"
+    },
+    {
+      "id": "hyphen",
+      "ok": false,
+      "body": "@jon-heaven"
+    },
+    {
+      "id": "too-long",
+      "ok": false,
+      "body": "@abcdefghijklmnop"
+    },
+    {
+      "id": "empty-at",
+      "ok": false,
+      "body": "@"
+    },
+    {
+      "id": "emoji",
+      "ok": false,
+      "body": "@🐕"
+    },
+    {
+      "id": "opreturn-pipe",
+      "ok": false,
+      "body": "AT1|reg|@jon|D8mZsgKwmSQWYRPEMCcm8KzNFj1JVF5UpA"
+    },
+    {
+      "id": "transfer-op",
+      "ok": false,
+      "body": "{\"p\":\"at\",\"op\":\"transfer\",\"name\":\"@jon\"}"
+    },
+    {
+      "id": "revoke-op",
+      "ok": false,
+      "body": "{\"p\":\"at\",\"op\":\"revoke\",\"name\":\"@jon\"}"
+    },
+    {
+      "id": "json-dot-in-name",
+      "ok": false,
+      "body": "{\"p\":\"at\",\"op\":\"reg\",\"name\":\"jon.doge\"}"
+    }
+  ]
+}
