@@ -1,7 +1,7 @@
 {
   "protocol": "at",
-  "version": "1",
-  "notes": "Plain text must be the entire body (one trailing newline allowed). JSON name may omit @. Length is 1 to 15 characters: [a-z0-9_], one Extended_Pictographic scalar, or a flag pair counted as one character. A lone regional indicator, a ZWJ sequence, or a skin tone is not a handle. A dot, a DNS marker, or a DX marker never registers a handle.",
+  "version": "1.1",
+  "notes": "Plain text must be the entire body (one trailing newline allowed). JSON name may omit @. Length is 1 to 15 characters: [a-z0-9_], one Extended_Pictographic scalar, or a flag pair counted as one character. A lone regional indicator, a ZWJ sequence, or a skin tone is not a handle. A dot, a DNS marker, or a DX marker never registers a handle. v1.1: content type is never consulted; p is compared ASCII case-insensitively and must be 'at' (p:'@' is not a marker); a duplicated JSON key takes its last value.",
   "vectors": [
     {
       "id": "plain-jon",
@@ -143,7 +143,7 @@
       "id": "emoji-variation-selector",
       "ok": true,
       "op": "register",
-      "body": "@🐕\uFE0F",
+      "body": "@🐕️",
       "handle": "@🐕"
     },
     {
@@ -203,6 +203,86 @@
       "id": "json-dot-in-name",
       "ok": false,
       "body": "{\"p\":\"at\",\"op\":\"reg\",\"name\":\"jon.doge\"}"
+    },
+    {
+      "id": "json-p-uppercase",
+      "ok": true,
+      "op": "register",
+      "body": "{\"p\":\"AT\",\"op\":\"reg\",\"name\":\"jon\"}",
+      "handle": "@jon"
+    },
+    {
+      "id": "json-p-symbol-is-not-a-marker",
+      "ok": false,
+      "body": "{\"p\":\"@\",\"op\":\"reg\",\"name\":\"jon\"}"
+    },
+    {
+      "id": "json-p-handle-is-not-a-marker",
+      "ok": false,
+      "body": "{\"p\":\"handle\",\"op\":\"reg\",\"name\":\"@jon\"}"
+    },
+    {
+      "id": "json-p-non-string",
+      "ok": false,
+      "body": "{\"p\":1,\"op\":\"reg\",\"name\":\"@jon\"}"
+    },
+    {
+      "id": "json-duplicate-key-last-wins",
+      "ok": true,
+      "op": "register",
+      "body": "{\"p\":\"dns\",\"p\":\"at\",\"op\":\"reg\",\"name\":\"jon\"}",
+      "handle": "@jon"
+    },
+    {
+      "id": "json-duplicate-key-last-wins-away",
+      "ok": false,
+      "body": "{\"p\":\"at\",\"p\":\"dns\",\"op\":\"reg\",\"name\":\"jon\"}"
+    },
+    {
+      "id": "plain-content-type-ignored",
+      "ok": true,
+      "op": "register",
+      "contentType": "image/png",
+      "body": "@jon",
+      "handle": "@jon"
+    },
+    {
+      "id": "plain-crlf",
+      "ok": true,
+      "op": "register",
+      "body": "@jon\r\n",
+      "handle": "@jon"
+    },
+    {
+      "id": "plain-two-newlines",
+      "ok": false,
+      "body": "@jon\n\n"
+    },
+    {
+      "id": "plain-leading-space",
+      "ok": false,
+      "body": " @jon"
+    },
+    {
+      "id": "plain-bom",
+      "ok": true,
+      "op": "register",
+      "body": "﻿@jon",
+      "handle": "@jon"
+    },
+    {
+      "id": "json-config-is-not-a-register",
+      "ok": true,
+      "op": "config",
+      "body": "{\"p\":\"at\",\"op\":\"config\",\"name\":\"@jon\",\"address\":\"D8mZsgKwmSQWYRPEMCcm8KzNFj1JVF5UpA\"}",
+      "handle": "@jon"
+    },
+    {
+      "id": "json-primary-clear",
+      "ok": true,
+      "op": "primary",
+      "body": "{\"p\":\"at\",\"op\":\"primary\",\"name\":\"\"}",
+      "handle": ""
     }
   ]
 }

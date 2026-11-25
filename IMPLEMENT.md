@@ -4,7 +4,7 @@ Read this, then [spec.md](spec.md). If they disagree, spec.md wins.
 
 ## The mint
 
-Content type `text/plain`. The body is the handle and nothing else:
+Content type `text/plain` (indexers ignore the type; the body decides). The body is the handle and nothing else:
 
 ```text
 @jon
@@ -28,7 +28,9 @@ A later inscription from the current holder, content type `application/json`:
 {"p":"at","op":"config","name":"@jon","address":"D...","content":"hello"}
 ```
 
-`p` is the two letters `at`. `p:"dns"` and `p:"dx"` are other protocols and do not create or update a handle.
+`p` is the two letters `at`. `p:"@"` is not a marker. `p:"dns"` and `p:"dx"` are other protocols and do not create or update a handle.
+
+Records belong to the holder. Sell or move the handle to another address and they reset; the new holder inscribes their own config.
 
 ## Before you broadcast `@jon`
 
@@ -43,9 +45,10 @@ The recipient string `@jon` means this handle: the holder’s `address` record i
 Keep a separate column family from `dns_namespace` and from the Ð𝕏 bind index.
 
 1. Parse inscription bodies with the rules in spec §5–§6.
-2. The tip indexer ranks registers with the DNS §5.7 priority key (`W = 30`). The `at-handles` lane ranks by reveal height so it can scan from the first Doginal block without opening every transaction. A lower height replaces a later row.
+2. Rank registers with the DNS §5.7 priority key (`W = 30`) everywhere — the tip indexer and the `at-handles` replay lane alike. The lane keeps the last 30 blocks of P2SH outputs so a committed reveal ranks by its commit, and it voids a JSON register whose `bitworkc`/`bitworkr` claim fails. Ranking a replay by reveal height alone disagrees with a live indexer (spec §5.6).
 3. Owner is the current holder of the register inscription output. No `transfer` opcode.
 4. Apply config and primary only after spends in that transaction, and only from the holder. Same timing as DNS.
-5. Serve `/api/at/status`, `/list`, `/name/:handle`, `/name/:handle/claims`, `/address/:address`, `/primary/:address`, `/resolve/:handle`.
+4b. When the register output moves to a different owner, reset every record. A move to the same address keeps them (spec §5.3).
+5. Serve `/api/at/status`, `/list`, `/recent`, `/stats`, `/name/:handle`, `/name/:handle/claims`, `/name/:handle/history`, `/address/:address`, `/primary/:address`, `/resolve/:handle`. `resolve` returns `payTo: null` for a burned handle.
 
 Product: [doginals.lol/handles](https://doginals.lol/handles). Dig keeps paying a Ð𝕏 bind as an X bind until `/api/at` has history.
