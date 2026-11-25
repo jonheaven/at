@@ -15,7 +15,7 @@
       "type": "string",
       "minLength": 1,
       "maxLength": 16,
-      "description": "@ plus 1..15 of [a-z0-9_], or the localpart alone. Canonical form adds @ and lowercases. A dot is invalid."
+      "description": "@ plus 1..15 of [a-z0-9_], or @ plus one Extended_Pictographic scalar, or the localpart alone. Canonical form adds @ and lowercases ASCII. A dot, a second emoji scalar, a flag, a ZWJ sequence, or a skin tone is invalid."
     },
     "address": { "type": "string" },
     "url": { "type": "string" },

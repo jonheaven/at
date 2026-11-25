@@ -49,7 +49,7 @@ No address is assigned a handle by this document. There is no reserved list and 
 ## 3. Terminology
 
 - **Handle:** canonical `@` plus a localpart. Example: `@jon`.
-- **Localpart:** the characters after `@`. ASCII `[a-z0-9_]`, length 1 through 15.
+- **Localpart:** the characters after `@`. Either ASCII `[a-z0-9_]`, length 1 through 15, or exactly one Extended_Pictographic scalar, the same set DNS uses for a one-glyph name. Examples: `jon`, `🐕`.
 - **Register inscription:** the FCFS inscription that created the handle. Its output **is** the handle.
 - **Owner:** the address that can spend that output.
 - **Config:** a later inscription from the current owner. It updates records. It is not the handle.
@@ -73,7 +73,7 @@ No address is assigned a handle by this document. There is no reserved list and 
 - Rent, expiry, or a revoke opcode. Sending the output to an address you do not control is how a handle leaves you. The protocol does not burn it back to “available.”
 - A start height that ignores older exact `@jon` inscriptions. That would be a premine.
 - Verifying social accounts. That stays Ð𝕏 and ÐN05.
-- Emoji, spaces, hyphens, or dotted names inside the handle. Hyphen belongs to DNS labels. Dot belongs to DNS names. Emoji handles are a homoglyph mint.
+- Spaces, hyphens, or dotted names inside the handle. Hyphen belongs to DNS labels. Dot belongs to DNS names. A ZWJ sequence, a flag, or a skin-tone sequence is more than one scalar and is not a handle.
 
 ---
 
@@ -110,13 +110,10 @@ Indexers MUST ignore:
 
 UTF-8. Reject invalid UTF-8. Strip one leading U+FEFF. If the trimmed body starts with `{`, it is JSON (§5.2–§5.4), not plain text.
 
-Otherwise remove one trailing `\n` or `\r\n` if present. The remainder MUST contain no whitespace and MUST match:
+Otherwise remove one trailing `\n` or `\r\n` if present. The remainder MUST contain no whitespace. Fullwidth-fold (U+FF01..U+FF5E → the ASCII character 0x21..0x7E), strip U+FE0E and U+FE0F, then accept the body when it is a handle under §6:
 
-```text
-@[A-Za-z0-9_]{1,15}
-```
-
-after fullwidth ASCII fold (U+FF01..U+FF5E → the ASCII character 0x21..0x7E). Indexers then ASCII-lowercase the localpart. Stored form is `@jon`. `@Jon`, `@JON`, and fullwidth `＠ｊｏｎ` are that handle.
+- `@` plus `[A-Za-z0-9_]{1,15}`, then ASCII-lowercase. Stored form is `@jon`. `@Jon`, `@JON`, and fullwidth `＠ｊｏｎ` are that handle.
+- `@` plus exactly one Extended_Pictographic scalar, the same emoji-data set DNS uses for a one-glyph name. Stored form keeps that scalar. `@🐕` and the same glyph with a variation selector are one handle.
 
 Anything else is not a register. In particular, indexers MUST ignore:
 
@@ -125,6 +122,7 @@ Anything else is not a register. In particular, indexers MUST ignore:
 - a paragraph that contains `@jon`
 - `@jon.doge` (a dot)
 - `@` alone, `@jon-heaven` (a hyphen), a localpart longer than 15
+- a second emoji scalar, a flag, a ZWJ sequence, or a skin-tone sequence
 - more than one line
 
 The strict body is deliberate. DNS may ignore trailing tokens because `something.doge` rarely opens a sentence. `@` opens mentions constantly. A loose match would turn posts into squat inscriptions.
@@ -207,12 +205,12 @@ Indexers MUST:
 
 1. Fullwidth-fold, then ASCII-lowercase.
 2. Take one leading `@`. On the JSON `name` field only, a missing `@` is inserted when the rest is a legal localpart. Plain text without `@` does not register.
-3. Require the localpart to match `[a-z0-9_]{1,15}`.
-4. Reject a dot, a hyphen, a second `@`, whitespace, controls, emoji, and any other script.
+3. The localpart is either `[a-z0-9_]{1,15}` or exactly one Extended_Pictographic scalar (the same emoji-data set DNS uses for a one-glyph name). Strip U+FE0E and U+FE0F before that test, so `@🐕` and the same glyph with a variation selector are one handle.
+4. Reject a dot, a hyphen, a second `@`, whitespace, controls, any other script, and more than one emoji scalar.
 
 Underscore is allowed, including in front, because that is the handle shape people already type. DNS forbids underscore. That difference is another reason the two indexes stay split. `@jon` and `jon.doge` can be held by different people. Neither blocks the other.
 
-Charset size is 37 (26 letters, 10 digits, underscore) at each of 15 lengths. Indexers MAY report how many of each length are taken. That number is not a price.
+Charset size for letters is 37 (26 letters, 10 digits, underscore) at each of 15 lengths. A one-glyph emoji is its own seat, not a 15-length product. Indexers MAY report how many of each length are taken. That number is not a price.
 
 No handle is reserved. Not `jon`, not `satoshi`, not `doge`.
 
