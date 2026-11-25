@@ -10,7 +10,7 @@ Content type `text/plain` (indexers ignore the type; the body decides). The body
 @jon
 ```
 
-That is the whole inscription. One optional trailing newline is accepted. A second word, a sentence that mentions `@jon`, or `jon` with no `@` does not register. A handle is 1 to 15 characters. A character is a letter, digit, underscore, one Extended_Pictographic scalar, or a flag (two regional indicators, counted as one). `@jon🐕` and `@🇺🇸` register. A lone regional indicator, a ZWJ sequence, and a skin tone do not.
+That is the whole inscription. One optional trailing newline is accepted. A second word, a sentence that mentions `@jon`, or `jon` with no `@` does not register. A handle is 1 to 15 characters. A character is a letter, digit, underscore, one Extended_Pictographic scalar, a flag (two regional indicators, counted as one), or a ZWJ sequence that draws as one picture (also counted as one). `@jon🐕`, `@🇺🇸`, `@👨‍💻`, and the pirate flag register. A lone regional indicator, a stray ZWJ, and a skin tone do not.
 
 The envelope is the DNS carrier: P2SH commit, then a push-only reveal, `ord` pushes in `vin[0].scriptSig`. Same steps as [DNS](https://github.com/jonheaven/dns) (spec §5.0). Do not invent a second envelope. Do not put the handle in an OP_RETURN.
 

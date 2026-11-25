@@ -94,7 +94,7 @@ No address is assigned a handle by this document. There is no reserved list and 
 - Rent, expiry, or a revoke opcode. Sending the output to an address you do not control is how a handle leaves you. The protocol does not burn it back to “available.”
 - A start height that ignores older exact `@jon` inscriptions. That would be a premine.
 - Verifying social accounts. That stays Ð𝕏 and ÐN05.
-- Spaces, hyphens, or dotted names inside the handle. Hyphen belongs to DNS labels. Dot belongs to DNS names. A ZWJ sequence or a skin-tone modifier is not a character and is not a handle. A flag is one character.
+- Spaces, hyphens, or dotted names inside the handle. Hyphen belongs to DNS labels. Dot belongs to DNS names. A flag is one character. A ZWJ sequence that draws as one picture is one character. A skin-tone modifier is not a handle.
 
 ---
 
@@ -144,7 +144,7 @@ Anything else is not a register. In particular, indexers MUST ignore:
 - a paragraph that contains `@jon`
 - `@jon.doge` (a dot)
 - `@` alone, `@jon-heaven` (a hyphen), more than 15 characters
-- a lone regional indicator, a ZWJ sequence, or a skin-tone modifier
+- a lone regional indicator, a ZWJ that is not gluing emoji, or a skin-tone modifier
 - more than one line
 
 The strict body is deliberate. DNS may ignore trailing tokens because `something.doge` rarely opens a sentence. `@` opens mentions constantly. A loose match would turn posts into squat inscriptions.
@@ -244,13 +244,14 @@ Indexers MUST:
    - `a-z`, `0-9`, `_`.
    - Two regional indicators (U+1F1E6 through U+1F1FF), a flag. A lone indicator rejects the handle.
    - One Extended_Pictographic scalar from Unicode 18.0.0 `emoji-data.txt` (that property only). Not a regional indicator and not a skin-tone modifier.
+   - One ZWJ sequence of those scalars, joined by U+200D. The whole picture is one character. `@👨‍💻` is one, and it is not `@👨` or `@💻`. The pirate flag is one, and it is not `@🏴` or `@☠`. A ZWJ that does not sit between two of those scalars rejects the handle.
    - One non-ASCII currency sign (general category `Sc`). `₿` is one. ASCII `$` is not.
    - One letter, from any script, in any order. `@Ðoge` is not `@doge`. `@犬jon`, `@jo犬n`, and `@jon犬` are handles. `@jonかぼす` is a handle.
    - One non-ASCII number (general category `N`). It is not folded onto `0-9`. `@١٩٩` and `@199` are different handles. `@1٩` is a handle.
-5. The localpart is 1 to 15 of those characters, mixed however the owner writes them. `@jon🐕` is 4. `@jon🇺🇸` is 4. `@かぼす` is 3. Fifteen `🐕` is valid. Sixteen is not.
+5. The localpart is 1 to 15 of those characters, mixed however the owner writes them. `@jon🐕` is 4. `@jon🇺🇸` is 4. `@jon👨‍💻` is 4. `@👨‍💻` is 1. The pirate flag is 1. `@かぼす` is 3. Fifteen `🐕` is valid. Sixteen is not.
 6. Reject, and do not index even as an extension:
    - a dot, a hyphen, a second `@`, whitespace, controls, bidi and other invisible format characters, and dot or slash lookalikes
-   - U+200D and any ZWJ sequence (`@😮‍💨`, `@👨‍💻`, the pirate flag)
+   - a ZWJ that is not between two Extended_Pictographic scalars
    - an emoji modifier (U+1F3FB through U+1F3FF) and any skin tone
    - U+20E3 and any keycap (`@0⃣`)
    - a tag sequence (`@🏴󠁧󠁢󠁷󠁬󠁳󠁿`)
@@ -426,6 +427,6 @@ An implementation is conformant when:
 
 ## 15. Changelog
 
-- **v1.2 (2026-11-25).** §6 admits any letters, mixed in any order, so `@かぼす`, `@Ðoge`, `@犬jon`, `@jo犬n`, and `@jon犬` are handles. `@Ðoge` is not `@doge`. Non-ASCII numbers are not folded onto `0-9`. Non-ASCII currency signs (`@₿`, `@₿itcoin`) are characters. ZWJ sequences, skin tones, keycaps, tag sequences, and combining marks are invalid. A lookalike is a different handle, not a rejected one. No v1.1 handle changes its canonical form or its winner.
+- **v1.2 (2026-11-25).** §6 admits any letters, mixed in any order, so `@かぼす`, `@Ðoge`, `@犬jon`, `@jo犬n`, and `@jon犬` are handles. `@Ðoge` is not `@doge`. Non-ASCII numbers are not folded onto `0-9`. Non-ASCII currency signs (`@₿`, `@₿itcoin`) are characters. A ZWJ sequence that draws as one picture is one character, so `@👨‍💻` and the pirate flag are handles and are not the emoji they are built from. Skin tones, keycaps, tag sequences, and combining marks are invalid. A lookalike is a different handle, not a rejected one. No v1.1 handle changes its canonical form or its winner.
 - **v1.1 (2026-11-24).** §0 settles the marker: plain `@jon` preferred, JSON `p:"at"` valid, `p:"@"` not a marker. Content type is never consulted. Duplicate JSON keys take the last value. Records reset when the owner changes. A burned handle has no pay-to. Replays MUST rank with the commit-first key and honor bitwork. Added §7.1 (many addresses), `/history`, and `/stats`.
 - **v1 (2026-11-24).** First public text.
