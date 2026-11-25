@@ -15,7 +15,7 @@
       "type": "string",
       "minLength": 1,
       "maxLength": 31,
-      "description": "@ plus 1..15 characters, or the localpart alone. Letters from any script may mix, so @犬jon, @jo犬n, and @jon犬 are handles, and @Ðoge is not @doge. Also [0-9_], one Extended_Pictographic scalar, one flag (two regional indicators), one ZWJ picture such as @👨‍💻 or the pirate flag, one non-ASCII currency sign, or one non-ASCII number. A ZWJ picture is one character and is not the emoji it is built from. Canonical form adds @ and lowercases ASCII only. Count characters, not bytes. A dot, a lone regional indicator, a stray ZWJ, a keycap, a tag sequence, a combining mark, or a skin tone is invalid."
+      "description": "@ plus 1..15 characters, or the localpart alone. Letters from any script may mix, so @犬jon, @jo犬n, and @jon犬 are handles, and @Ðoge is not @doge. Also [0-9_], one Extended_Pictographic scalar, one flag, one ZWJ picture, one skin-tone emoji, one keycap, one subdivision flag, one currency sign, or one non-ASCII number. Each of those pictures is one character and is not the emoji it is built from. Canonical form adds @ and lowercases ASCII only. Count characters, not bytes. A dot, a lone regional indicator, a stray joiner, or a combining mark is invalid."
     },
     "address": { "type": "string" },
     "url": { "type": "string" },

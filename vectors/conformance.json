@@ -1,7 +1,7 @@
 {
   "protocol": "at",
   "version": "1.2",
-  "notes": "Plain text must be the entire body (one trailing newline allowed). JSON name may omit @. Length is 1 to 15 characters, mixed in any order: letters, [0-9_], one Extended_Pictographic scalar, a flag pair counted as one character, a ZWJ sequence counted as one character, one non-ASCII currency sign, or one non-ASCII number. @Ðoge is a handle and is not @doge. @犬jon, @jo犬n, and @jon犬 are handles. @👨‍💻 is one character and is not @👨. The pirate flag is one character and is not @🏴. A lone regional indicator, a stray ZWJ, a keycap, a tag sequence, a combining mark, or a skin tone is not a handle. A lookalike is a different handle, not a rejected one. A dot, a DNS marker, or a DX marker never registers a handle. v1.2 does not change any v1.1 canonical handle. v1.1: content type is never consulted; p is compared ASCII case-insensitively and must be 'at' (p:'@' is not a marker); a duplicated JSON key takes its last value.",
+  "notes": "Plain text must be the entire body (one trailing newline allowed). JSON name may omit @. Length is 1 to 15 characters, mixed in any order: letters, [0-9_], one Extended_Pictographic scalar, a flag pair counted as one character, a ZWJ sequence counted as one character, one non-ASCII currency sign, or one non-ASCII number. @Ðoge is a handle and is not @doge. @犬jon, @jo犬n, and @jon犬 are handles. @👨‍💻 is one character and is not @👨. The pirate flag is one character and is not @🏴. A skin-tone emoji, a keycap, and a subdivision flag are one character each. @👍🏽 is not @👍. @0⃣ is not @0. @🏴󠁧󠁢󠁷󠁬󠁳󠁿 is not @🏴. A lone regional indicator, a stray ZWJ, or a combining mark is not a handle. A lookalike is a different handle, not a rejected one. A dot, a DNS marker, or a DX marker never registers a handle. v1.2 does not change any v1.1 canonical handle. v1.1: content type is never consulted; p is compared ASCII case-insensitively and must be 'at' (p:'@' is not a marker); a duplicated JSON key takes its last value.",
   "vectors": [
     {
       "id": "plain-jon",
@@ -381,9 +381,30 @@
       "body": "@a‍b"
     },
     {
-      "id": "keycap",
+      "id": "skin-medium",
+      "ok": true,
+      "op": "register",
+      "body": "@👍🏽",
+      "handle": "@👍🏽"
+    },
+    {
+      "id": "skin-on-other-emoji",
       "ok": false,
-      "body": "@0⃣"
+      "body": "@🐕🏽"
+    },
+    {
+      "id": "keycap",
+      "ok": true,
+      "op": "register",
+      "body": "@0⃣",
+      "handle": "@0⃣"
+    },
+    {
+      "id": "wales-flag",
+      "ok": true,
+      "op": "register",
+      "body": "@🏴󠁧󠁢󠁷󠁬󠁳󠁿",
+      "handle": "@🏴󠁧󠁢󠁷󠁬󠁳󠁿"
     },
     {
       "id": "cyrillic-lookalike-is-its-own-handle",
