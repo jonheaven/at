@@ -1,7 +1,7 @@
 {
   "protocol": "at",
-  "version": "1.1",
-  "notes": "Plain text must be the entire body (one trailing newline allowed). JSON name may omit @. Length is 1 to 15 characters: [a-z0-9_], one Extended_Pictographic scalar, or a flag pair counted as one character. A lone regional indicator, a ZWJ sequence, or a skin tone is not a handle. A dot, a DNS marker, or a DX marker never registers a handle. v1.1: content type is never consulted; p is compared ASCII case-insensitively and must be 'at' (p:'@' is not a marker); a duplicated JSON key takes its last value.",
+  "version": "1.2",
+  "notes": "Plain text must be the entire body (one trailing newline allowed). JSON name may omit @. Length is 1 to 15 characters: [a-z0-9_], one Extended_Pictographic scalar, a flag pair counted as one character, one non-ASCII currency sign, the Dogecoin sign Ð, one non-ASCII number, or letters from a single non-Latin script (Hiragana, Katakana, and Han are one script). A lone regional indicator, a ZWJ sequence, a keycap, a tag sequence, a combining mark, a mixed script, a whole-script ASCII lookalike, or a skin tone is not a handle. A dot, a DNS marker, or a DX marker never registers a handle. v1.2 adds those characters and does not change any v1.1 canonical handle. v1.1: content type is never consulted; p is compared ASCII case-insensitively and must be 'at' (p:'@' is not a marker); a duplicated JSON key takes its last value.",
   "vectors": [
     {
       "id": "plain-jon",
@@ -283,6 +283,73 @@
       "op": "primary",
       "body": "{\"p\":\"at\",\"op\":\"primary\",\"name\":\"\"}",
       "handle": ""
+    },
+    {
+      "id": "hiragana-kabosu",
+      "ok": true,
+      "op": "register",
+      "body": "@かぼす",
+      "handle": "@かぼす"
+    },
+    {
+      "id": "kana-han-one-script",
+      "ok": true,
+      "op": "register",
+      "body": "@犬かぼす",
+      "handle": "@犬かぼす"
+    },
+    {
+      "id": "han-numeral",
+      "ok": true,
+      "op": "register",
+      "body": "@八",
+      "handle": "@八"
+    },
+    {
+      "id": "arabic-indic-digits",
+      "ok": true,
+      "op": "register",
+      "body": "@١٩٩",
+      "handle": "@١٩٩"
+    },
+    {
+      "id": "bitcoin-sign",
+      "ok": true,
+      "op": "register",
+      "body": "@₿itcoin",
+      "handle": "@₿itcoin"
+    },
+    {
+      "id": "doge-sign",
+      "ok": true,
+      "op": "register",
+      "body": "@ð",
+      "handle": "@Ð"
+    },
+    {
+      "id": "mixed-script",
+      "ok": false,
+      "body": "@jonかぼす"
+    },
+    {
+      "id": "doge-sign-inside-latin",
+      "ok": false,
+      "body": "@Ðoge"
+    },
+    {
+      "id": "zwj",
+      "ok": false,
+      "body": "@😮‍💨"
+    },
+    {
+      "id": "keycap",
+      "ok": false,
+      "body": "@0⃣"
+    },
+    {
+      "id": "whole-script-lookalike",
+      "ok": false,
+      "body": "@ооо"
     }
   ]
 }
