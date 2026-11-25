@@ -14,8 +14,8 @@
     "name": {
       "type": "string",
       "minLength": 1,
-      "maxLength": 16,
-      "description": "@ plus 1..15 of [a-z0-9_], or @ plus one Extended_Pictographic scalar, or the localpart alone. Canonical form adds @ and lowercases ASCII. A dot, a second emoji scalar, a flag, a ZWJ sequence, or a skin tone is invalid."
+      "maxLength": 31,
+      "description": "@ plus 1..15 characters, or the localpart alone. A character is [a-z0-9_], one Extended_Pictographic scalar, or one flag (two regional indicators). Canonical form adds @ and lowercases ASCII. Count characters, not bytes. A dot, a lone regional indicator, a ZWJ sequence, or a skin tone is invalid."
     },
     "address": { "type": "string" },
     "url": { "type": "string" },

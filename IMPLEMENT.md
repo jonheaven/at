@@ -10,7 +10,7 @@ Content type `text/plain`. The body is the handle and nothing else:
 @jon
 ```
 
-That is the whole inscription. One optional trailing newline is accepted. A second word, a sentence that mentions `@jon`, or `jon` with no `@` does not register. `@🐕` does: one Extended_Pictographic scalar, the same set a one-glyph DNS name uses. A flag, a ZWJ sequence, or a skin tone is more than one scalar and does not register.
+That is the whole inscription. One optional trailing newline is accepted. A second word, a sentence that mentions `@jon`, or `jon` with no `@` does not register. A handle is 1 to 15 characters. A character is a letter, digit, underscore, one Extended_Pictographic scalar, or a flag (two regional indicators, counted as one). `@jon🐕` and `@🇺🇸` register. A lone regional indicator, a ZWJ sequence, and a skin tone do not.
 
 The envelope is the DNS carrier: P2SH commit, then a push-only reveal, `ord` pushes in `vin[0].scriptSig`. Same steps as [DNS](https://github.com/jonheaven/dns) (spec §5.0). Do not invent a second envelope. Do not put the handle in an OP_RETURN.
 

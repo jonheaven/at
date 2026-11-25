@@ -1,7 +1,7 @@
 {
   "protocol": "at",
   "version": "1",
-  "notes": "Plain text must be the entire body (one trailing newline allowed). JSON name may omit @. One Extended_Pictographic scalar is a handle. A second scalar, a flag, a ZWJ sequence, or a skin tone is not. A dot, a DNS marker, or a DX marker never registers a handle.",
+  "notes": "Plain text must be the entire body (one trailing newline allowed). JSON name may omit @. Length is 1 to 15 characters: [a-z0-9_], one Extended_Pictographic scalar, or a flag pair counted as one character. A lone regional indicator, a ZWJ sequence, or a skin tone is not a handle. A dot, a DNS marker, or a DX marker never registers a handle.",
   "vectors": [
     {
       "id": "plain-jon",
@@ -148,8 +148,41 @@
     },
     {
       "id": "emoji-two",
+      "ok": true,
+      "op": "register",
+      "body": "@🐕🐕",
+      "handle": "@🐕🐕"
+    },
+    {
+      "id": "emoji-mixed",
+      "ok": true,
+      "op": "register",
+      "body": "@Jon🐕",
+      "handle": "@jon🐕"
+    },
+    {
+      "id": "flag",
+      "ok": true,
+      "op": "register",
+      "body": "@🇺🇸",
+      "handle": "@🇺🇸"
+    },
+    {
+      "id": "flag-mixed",
+      "ok": true,
+      "op": "register",
+      "body": "@jon🇺🇸",
+      "handle": "@jon🇺🇸"
+    },
+    {
+      "id": "flag-half",
       "ok": false,
-      "body": "@🐕🐕"
+      "body": "@🇺"
+    },
+    {
+      "id": "emoji-sixteen",
+      "ok": false,
+      "body": "@🐕🐕🐕🐕🐕🐕🐕🐕🐕🐕🐕🐕🐕🐕🐕🐕"
     },
     {
       "id": "opreturn-pipe",

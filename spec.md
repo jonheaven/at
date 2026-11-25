@@ -49,7 +49,7 @@ No address is assigned a handle by this document. There is no reserved list and 
 ## 3. Terminology
 
 - **Handle:** canonical `@` plus a localpart. Example: `@jon`.
-- **Localpart:** the characters after `@`. Either ASCII `[a-z0-9_]`, length 1 through 15, or exactly one Extended_Pictographic scalar, the same set DNS uses for a one-glyph name. Examples: `jon`, `🐕`.
+- **Localpart:** the characters after `@`. 1 to 15 characters. A character is `a-z`, `0-9`, `_`, one Extended_Pictographic scalar, or one flag (two regional indicators). Examples: `jon`, `jon🐕`, `🇺🇸`.
 - **Register inscription:** the FCFS inscription that created the handle. Its output **is** the handle.
 - **Owner:** the address that can spend that output.
 - **Config:** a later inscription from the current owner. It updates records. It is not the handle.
@@ -73,7 +73,7 @@ No address is assigned a handle by this document. There is no reserved list and 
 - Rent, expiry, or a revoke opcode. Sending the output to an address you do not control is how a handle leaves you. The protocol does not burn it back to “available.”
 - A start height that ignores older exact `@jon` inscriptions. That would be a premine.
 - Verifying social accounts. That stays Ð𝕏 and ÐN05.
-- Spaces, hyphens, or dotted names inside the handle. Hyphen belongs to DNS labels. Dot belongs to DNS names. A ZWJ sequence, a flag, or a skin-tone sequence is more than one scalar and is not a handle.
+- Spaces, hyphens, or dotted names inside the handle. Hyphen belongs to DNS labels. Dot belongs to DNS names. A ZWJ sequence or a skin-tone modifier is not a character and is not a handle. A flag is one character.
 
 ---
 
@@ -110,10 +110,7 @@ Indexers MUST ignore:
 
 UTF-8. Reject invalid UTF-8. Strip one leading U+FEFF. If the trimmed body starts with `{`, it is JSON (§5.2–§5.4), not plain text.
 
-Otherwise remove one trailing `\n` or `\r\n` if present. The remainder MUST contain no whitespace. Fullwidth-fold (U+FF01..U+FF5E → the ASCII character 0x21..0x7E), strip U+FE0E and U+FE0F, then accept the body when it is a handle under §6:
-
-- `@` plus `[A-Za-z0-9_]{1,15}`, then ASCII-lowercase. Stored form is `@jon`. `@Jon`, `@JON`, and fullwidth `＠ｊｏｎ` are that handle.
-- `@` plus exactly one Extended_Pictographic scalar, the same emoji-data set DNS uses for a one-glyph name. Stored form keeps that scalar. `@🐕` and the same glyph with a variation selector are one handle.
+Otherwise remove one trailing `\n` or `\r\n` if present. The remainder MUST contain no whitespace. Fullwidth-fold (U+FF01..U+FF5E → the ASCII character 0x21..0x7E), ASCII-lowercase, strip U+FE0E and U+FE0F, then accept the body when it is a handle under §6. Stored form is `@jon`, `@jon🐕`, or `@🇺🇸`. `@Jon🐕` and `@jon🐕` plus a variation selector are `@jon🐕`.
 
 Anything else is not a register. In particular, indexers MUST ignore:
 
@@ -121,8 +118,8 @@ Anything else is not a register. In particular, indexers MUST ignore:
 - `@jon is taken` (a second token)
 - a paragraph that contains `@jon`
 - `@jon.doge` (a dot)
-- `@` alone, `@jon-heaven` (a hyphen), a localpart longer than 15
-- a second emoji scalar, a flag, a ZWJ sequence, or a skin-tone sequence
+- `@` alone, `@jon-heaven` (a hyphen), more than 15 characters
+- a lone regional indicator, a ZWJ sequence, or a skin-tone modifier
 - more than one line
 
 The strict body is deliberate. DNS may ignore trailing tokens because `something.doge` rarely opens a sentence. `@` opens mentions constantly. A loose match would turn posts into squat inscriptions.
@@ -203,14 +200,18 @@ There is no activation height. An exact `@jon` inscription from before this spec
 
 Indexers MUST:
 
-1. Fullwidth-fold, then ASCII-lowercase.
+1. Fullwidth-fold, then ASCII-lowercase. Do not fold one emoji into another. `🐕` and `🐶` are different handles.
 2. Take one leading `@`. On the JSON `name` field only, a missing `@` is inserted when the rest is a legal localpart. Plain text without `@` does not register.
-3. The localpart is either `[a-z0-9_]{1,15}` or exactly one Extended_Pictographic scalar (the same emoji-data set DNS uses for a one-glyph name). Strip U+FE0E and U+FE0F before that test, so `@🐕` and the same glyph with a variation selector are one handle.
-4. Reject a dot, a hyphen, a second `@`, whitespace, controls, any other script, and more than one emoji scalar.
+3. Strip U+FE0E and U+FE0F. They are not characters and do not create a second handle.
+4. Count characters, not bytes and not UTF-16 code units. Walk the remaining code points:
+   - Two regional indicators (U+1F1E6 through U+1F1FF) are one character, a flag. A lone indicator rejects the handle.
+   - Otherwise the code point is one character when it is `a-z`, `0-9`, `_`, or Extended_Pictographic in Unicode 18.0.0 `emoji-data.txt` (that property only).
+5. The localpart is 1 to 15 of those characters, in any order. `@jon🐕` is 4. `@jon🇺🇸` is 4. Fifteen `🐕` is valid. Sixteen is not. `🇺🇸` is one character.
+6. Reject a dot, a hyphen, a second `@`, whitespace, controls, any other script, U+200D, and an emoji modifier (U+1F3FB through U+1F3FF). A ZWJ sequence and a skin tone are not handles.
 
 Underscore is allowed, including in front, because that is the handle shape people already type. DNS forbids underscore. That difference is another reason the two indexes stay split. `@jon` and `jon.doge` can be held by different people. Neither blocks the other.
 
-Charset size for letters is 37 (26 letters, 10 digits, underscore) at each of 15 lengths. A one-glyph emoji is its own seat, not a 15-length product. Indexers MAY report how many of each length are taken. That number is not a price.
+Charset size for letters is 37 (26 letters, 10 digits, underscore) at each of 15 lengths. Emoji and flags share that same 15. Indexers MAY report how many of each length are taken. Length is the character count above, not the byte length. That number is not a price.
 
 No handle is reserved. Not `jon`, not `satoshi`, not `doge`.
 
@@ -277,7 +278,8 @@ For each handle:
 | Method | Path |
 | --- | --- |
 | GET | `/api/at/status` |
-| GET | `/api/at/list?offset=&limit=&len=` |
+| GET | `/api/at/list?offset=&limit=&len=&q=&emoji=` |
+| GET | `/api/at/recent?offset=&limit=` |
 | GET | `/api/at/name/:handle` |
 | GET | `/api/at/name/:handle/claims` |
 | GET | `/api/at/address/:address` |
