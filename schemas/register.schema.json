@@ -15,7 +15,7 @@
       "type": "string",
       "minLength": 1,
       "maxLength": 31,
-      "description": "@ plus 1..15 characters, or the localpart alone. A character is [a-z0-9_], one Extended_Pictographic scalar, one flag (two regional indicators), one non-ASCII currency sign, the Dogecoin sign Ð, one non-ASCII number, or a letter from a single non-Latin script (Hiragana, Katakana, and Han count as one). Canonical form adds @ and lowercases ASCII only. Count characters, not bytes. A dot, a mixed script, a lone regional indicator, a ZWJ sequence, a keycap, a tag sequence, a combining mark, or a skin tone is invalid."
+      "description": "@ plus 1..15 characters, or the localpart alone. A character is a letter (a-z and other Latin letters are one script, so @Ðoge is not @doge), [0-9_], one Extended_Pictographic scalar, one flag (two regional indicators), one non-ASCII currency sign, or one non-ASCII number. Hiragana, Katakana, and Han count as one script. Canonical form adds @ and lowercases ASCII only. Count characters, not bytes. A dot, a mixed script, a lone regional indicator, a ZWJ sequence, a keycap, a tag sequence, a combining mark, or a skin tone is invalid."
     },
     "address": { "type": "string" },
     "url": { "type": "string" },

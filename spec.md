@@ -237,7 +237,7 @@ There is no activation height. An exact `@jon` inscription from before this spec
 
 Indexers MUST:
 
-1. Fullwidth-fold, then ASCII-lowercase. Do not fold one emoji into another. `🐕` and `🐶` are different handles. Do not Unicode-casefold. `Ⓜ` stays `Ⓜ`. `ð` (U+00F0) folds only to the Dogecoin sign `Ð` (U+00D0), never to `d`.
+1. Fullwidth-fold, then ASCII-lowercase. Do not fold one emoji into another. `🐕` and `🐶` are different handles. Do not Unicode-casefold. `Ⓜ` stays `Ⓜ`. `Ð` stays `Ð` and `ð` stays `ð`. Neither one becomes `d`.
 2. Take one leading `@`. On the JSON `name` field only, a missing `@` is inserted when the rest is a legal localpart. Plain text without `@` does not register.
 3. Strip U+FE0E and U+FE0F. They are not characters and do not create a second handle.
 4. Count characters, not bytes and not UTF-16 code units. Walk the remaining code points. Each of these is one character:
@@ -245,8 +245,7 @@ Indexers MUST:
    - Two regional indicators (U+1F1E6 through U+1F1FF), a flag. A lone indicator rejects the handle.
    - One Extended_Pictographic scalar from Unicode 18.0.0 `emoji-data.txt` (that property only). Not a regional indicator and not a skin-tone modifier.
    - One non-ASCII currency sign (general category `Sc`). `₿` is one. ASCII `$` is not.
-   - The Dogecoin sign `Ð` (U+00D0). It may stand alone or beside emoji, a flag, `_`, or a currency sign. It MUST NOT sit in a handle that also has `a-z`, so `@Ðoge` is not `@doge` and is not a handle.
-   - One letter from a single non-Latin script. Hiragana, Katakana, and Han are one script, so `@かぼす`, `@カボス`, and `@犬かぼす` are handles. Hangul is its own script. Arabic letters are their own script.
+   - One letter. `a-z` and other Latin letters are the same script, so `@Ðoge`, `@ðoge`, and `@café` are handles. They are not `@doge` or `@cafe`. Hiragana, Katakana, and Han are one script, so `@かぼす`, `@カボス`, and `@犬かぼす` are handles. Hangul is its own script. Arabic letters are their own script.
    - One non-ASCII number (general category `N`). It is not folded onto `0-9`. `@١٩٩` and `@199` are different handles. A non-ASCII number takes the script of its block and MUST NOT share a handle with `a-z` or `0-9`.
 5. The localpart is 1 to 15 of those characters. `@jon🐕` is 4. `@jon🇺🇸` is 4. `@かぼす` is 3. Fifteen `🐕` is valid. Sixteen is not.
 6. One letter script per handle. `a-z` and `0-9` MUST NOT share a handle with any non-Latin letter or non-ASCII number. `@jonかぼす` and `@かぼす1` are invalid. Emoji, flags, `_`, and currency signs may sit beside either side.
@@ -257,9 +256,7 @@ Indexers MUST:
    - U+20E3 and any keycap (`@0⃣`)
    - a tag sequence (`@🏴󠁧󠁢󠁷󠁬󠁳󠁿`)
    - a combining mark. Use the precomposed character (`ぼ`, not `ほ` plus a dakuten)
-   - a Latin letter other than `a-z` and the Dogecoin sign
-   - a whole-script ASCII lookalike: every letter is ASCII or one of the DNS lookalikes (`а е о р с у х і ј ѕ һ ԁ ԛ ԝ в т`, the Greek `α ο ε ι κ ρ τ υ χ`, and `ɑ`), and at least one letter is not ASCII. `@ооо` is invalid. A Cyrillic word that also uses a letter which is not a lookalike is valid, and it is not the ASCII word
-   - two letter scripts in one handle
+   - two letter scripts in one handle. A Cyrillic letter inside a Latin name is two scripts. A Cyrillic name that only looks like a Latin word is still that Cyrillic name, and it is not the Latin word.
 
 Underscore is allowed, including in front, because that is the handle shape people already type. DNS forbids underscore. That difference is another reason the two indexes stay split. `@jon` and `jon.doge` can be held by different people. Neither blocks the other.
 
@@ -431,6 +428,6 @@ An implementation is conformant when:
 
 ## 15. Changelog
 
-- **v1.2 (2026-11-25).** §6 admits one non-Latin letter script (Hiragana, Katakana, and Han are one script), non-ASCII numbers that are not folded onto `0-9`, non-ASCII currency signs (`@₿`, `@₿itcoin`), and the Dogecoin sign `Ð`. Mixed scripts, whole-script ASCII lookalikes, other Latin letters, ZWJ sequences, skin tones, keycaps, tag sequences, and combining marks are invalid and are not an extension registry. No v1.1 handle changes its canonical form or its winner.
+- **v1.2 (2026-11-25).** §6 admits letters beyond `a-z` when the handle stays one script, so `@かぼす` and `@Ðoge` are handles. `@Ðoge` is not `@doge`. Non-ASCII numbers are not folded onto `0-9`. Non-ASCII currency signs (`@₿`, `@₿itcoin`) are characters. Mixed scripts, ZWJ sequences, skin tones, keycaps, tag sequences, and combining marks are invalid. A lookalike is a different handle, not a rejected one. No v1.1 handle changes its canonical form or its winner.
 - **v1.1 (2026-11-24).** §0 settles the marker: plain `@jon` preferred, JSON `p:"at"` valid, `p:"@"` not a marker. Content type is never consulted. Duplicate JSON keys take the last value. Records reset when the owner changes. A burned handle has no pay-to. Replays MUST rank with the commit-first key and honor bitwork. Added §7.1 (many addresses), `/history`, and `/stats`.
 - **v1 (2026-11-24).** First public text.
