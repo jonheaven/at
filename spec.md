@@ -245,18 +245,16 @@ Indexers MUST:
    - Two regional indicators (U+1F1E6 through U+1F1FF), a flag. A lone indicator rejects the handle.
    - One Extended_Pictographic scalar from Unicode 18.0.0 `emoji-data.txt` (that property only). Not a regional indicator and not a skin-tone modifier.
    - One non-ASCII currency sign (general category `Sc`). `₿` is one. ASCII `$` is not.
-   - One letter. `a-z` and other Latin letters are the same script, so `@Ðoge`, `@ðoge`, and `@café` are handles. They are not `@doge` or `@cafe`. Hiragana, Katakana, and Han are one script, so `@かぼす`, `@カボス`, and `@犬かぼす` are handles. Hangul is its own script. Arabic letters are their own script.
-   - One non-ASCII number (general category `N`). It is not folded onto `0-9`. `@١٩٩` and `@199` are different handles. A non-ASCII number takes the script of its block and MUST NOT share a handle with `a-z` or `0-9`.
-5. The localpart is 1 to 15 of those characters. `@jon🐕` is 4. `@jon🇺🇸` is 4. `@かぼす` is 3. Fifteen `🐕` is valid. Sixteen is not.
-6. One letter script per handle. `a-z` and `0-9` MUST NOT share a handle with any non-Latin letter or non-ASCII number. `@jonかぼす` and `@かぼす1` are invalid. Emoji, flags, `_`, and currency signs may sit beside either side.
-7. Reject, and do not index even as an extension:
+   - One letter, from any script, in any order. `@Ðoge` is not `@doge`. `@犬jon`, `@jo犬n`, and `@jon犬` are handles. `@jonかぼす` is a handle.
+   - One non-ASCII number (general category `N`). It is not folded onto `0-9`. `@١٩٩` and `@199` are different handles. `@1٩` is a handle.
+5. The localpart is 1 to 15 of those characters, mixed however the owner writes them. `@jon🐕` is 4. `@jon🇺🇸` is 4. `@かぼす` is 3. Fifteen `🐕` is valid. Sixteen is not.
+6. Reject, and do not index even as an extension:
    - a dot, a hyphen, a second `@`, whitespace, controls, bidi and other invisible format characters, and dot or slash lookalikes
    - U+200D and any ZWJ sequence (`@😮‍💨`, `@👨‍💻`, the pirate flag)
    - an emoji modifier (U+1F3FB through U+1F3FF) and any skin tone
    - U+20E3 and any keycap (`@0⃣`)
    - a tag sequence (`@🏴󠁧󠁢󠁷󠁬󠁳󠁿`)
    - a combining mark. Use the precomposed character (`ぼ`, not `ほ` plus a dakuten)
-   - two letter scripts in one handle. A Cyrillic letter inside a Latin name is two scripts. A Cyrillic name that only looks like a Latin word is still that Cyrillic name, and it is not the Latin word.
 
 Underscore is allowed, including in front, because that is the handle shape people already type. DNS forbids underscore. That difference is another reason the two indexes stay split. `@jon` and `jon.doge` can be held by different people. Neither blocks the other.
 
@@ -428,6 +426,6 @@ An implementation is conformant when:
 
 ## 15. Changelog
 
-- **v1.2 (2026-11-25).** §6 admits letters beyond `a-z` when the handle stays one script, so `@かぼす` and `@Ðoge` are handles. `@Ðoge` is not `@doge`. Non-ASCII numbers are not folded onto `0-9`. Non-ASCII currency signs (`@₿`, `@₿itcoin`) are characters. Mixed scripts, ZWJ sequences, skin tones, keycaps, tag sequences, and combining marks are invalid. A lookalike is a different handle, not a rejected one. No v1.1 handle changes its canonical form or its winner.
+- **v1.2 (2026-11-25).** §6 admits any letters, mixed in any order, so `@かぼす`, `@Ðoge`, `@犬jon`, `@jo犬n`, and `@jon犬` are handles. `@Ðoge` is not `@doge`. Non-ASCII numbers are not folded onto `0-9`. Non-ASCII currency signs (`@₿`, `@₿itcoin`) are characters. ZWJ sequences, skin tones, keycaps, tag sequences, and combining marks are invalid. A lookalike is a different handle, not a rejected one. No v1.1 handle changes its canonical form or its winner.
 - **v1.1 (2026-11-24).** §0 settles the marker: plain `@jon` preferred, JSON `p:"at"` valid, `p:"@"` not a marker. Content type is never consulted. Duplicate JSON keys take the last value. Records reset when the owner changes. A burned handle has no pay-to. Replays MUST rank with the commit-first key and honor bitwork. Added §7.1 (many addresses), `/history`, and `/stats`.
 - **v1 (2026-11-24).** First public text.
