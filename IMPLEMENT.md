@@ -1,4 +1,4 @@
-# Implement a Dogecoin @ handle mint
+﻿# Implement a Dogecoin @ handle mint
 
 Read this, then [spec.md](spec.md). If they disagree, spec.md wins.
 
@@ -32,7 +32,7 @@ A later inscription from the current holder, content type `application/json`:
 
 ## Before you broadcast `@jon`
 
-Rules apply to every earlier exact inscription. There is no start height that ignores history. Query `GET /api/at/resolve/@jon` (once dogex ships it) and only mint when the response says the handle is free. A historical inscription whose body is exactly `@jon` already won.
+Rules apply to every earlier exact inscription. There is no start height that ignores history. dogex lane `at-handles` scans from block 4,600,000 into the `at_*` column families and is on unless `DOGEX_INDEX_AT_SIDELANE=0`. It skips transactions that are not inscriptions. Until `GET /api/sidelanes/at-handles` is caught up, a missing row means "not scanned yet". A historical inscription whose body is exactly `@jon` already won.
 
 ## What wallets resolve
 
@@ -43,7 +43,7 @@ The recipient string `@jon` means this handle: the holder’s `address` record i
 Keep a separate column family from `dns_namespace` and from the Ð𝕏 bind index.
 
 1. Parse inscription bodies with the rules in spec §5–§6.
-2. Rank registers with the DNS §5.7 priority key (`W = 30`). Do not invent a second race rule.
+2. The tip indexer ranks registers with the DNS §5.7 priority key (`W = 30`). The `at-handles` lane ranks by reveal height so it can scan from the first Doginal block without opening every transaction. A lower height replaces a later row.
 3. Owner is the current holder of the register inscription output. No `transfer` opcode.
 4. Apply config and primary only after spends in that transaction, and only from the holder. Same timing as DNS.
 5. Serve `/api/at/status`, `/list`, `/name/:handle`, `/name/:handle/claims`, `/address/:address`, `/primary/:address`, `/resolve/:handle`.
