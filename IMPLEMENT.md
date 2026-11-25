@@ -48,4 +48,4 @@ Keep a separate column family from `dns_namespace` and from the Ð𝕏 bind inde
 4. Apply config and primary only after spends in that transaction, and only from the holder. Same timing as DNS.
 5. Serve `/api/at/status`, `/list`, `/name/:handle`, `/name/:handle/claims`, `/address/:address`, `/primary/:address`, `/resolve/:handle`.
 
-Product: [doginals.lol/names](https://doginals.lol/names) gains a handle claim next to `.doge`. Dig’s send field resolves `@handle` through `/api/at/resolve`.
+Product: [doginals.lol/handles](https://doginals.lol/handles). Dig keeps paying a Ð𝕏 bind as an X bind until `/api/at` has history.

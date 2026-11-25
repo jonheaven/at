@@ -294,13 +294,15 @@ For each handle:
 
 ## 11. Product
 
-**doginals.lol/names** is the directory for both protocols. Domains stay `label.namespace`. Handles are a second claim control and a second row, not a `.doge` search hit.
+**doginals.lol/handles** is the mint page. The body inscribed is the handle and nothing else. The page may mint before this index has replayed history. It MUST say that an earlier exact inscription can still win.
 
-- `/names` — search either kind. A query that starts with `@`, or that has no dot, searches handles. A query with a dot searches DNS.
-- `/names/@jon` — handle profile (the `@` may be `%40`).
-- Mint uses `signInscriptionTxs` (P2SH commit → reveal) and broadcasts through command.dog. The plain-text body is the handle.
+- `/handles` — claim one or more handles
+- `/handles/@jon` — same page, handle filled in (`@` may be `%40`)
+- Mint uses `signInscriptionTxs` (P2SH commit → reveal) and broadcasts through command.dog
 
-**Dig** shows held handles next to `.doge` names. The send field follows §8.
+`/names` stays DNS. A query with a dot is a domain. A handle is not a `.doge` search hit.
+
+**Dig** shows held handles next to `.doge` names once `/api/at/resolve` has history. Until that replay, a wallet that already pays a Ð𝕏 bind keeps calling that destination the X bind.
 
 A marketplace lists the register inscription the way it lists any Doginal. It MUST show the canonical handle from this index. A missed-claim inscription MUST be labeled as a duplicate, not as the handle. There is no separate handle order type.
 

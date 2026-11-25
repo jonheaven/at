@@ -11,7 +11,7 @@
 | **Protocol / wire identifier** | `p: "at"` · plain text `@` + localpart |
 | **Source of truth** | [spec.md](spec.md) |
 | **Indexer** | dogex `/api/at/*` (specified; ship against this document) |
-| **Product** | [doginals.lol/names](https://doginals.lol/names) — handles beside `.doge` names |
+| **Product** | [doginals.lol/handles](https://doginals.lol/handles) |
 | **Wallet** | Dig — recipient `@jon` resolves this inscription, not a Ð𝕏 bind |
 | **Public copy** | <https://github.com/jonheaven/at> |
 
