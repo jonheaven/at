@@ -32,7 +32,7 @@ Every indexer and every names site that follows this table gets the same owner f
 
 ## 1. Introduction
 
-An @ handle is a short name you can hold, such as `@jon`. It is a Doginals inscription. The first valid inscription of that handle wins. The holder of that inscription output is the owner. Spending the output transfers the handle.
+An @ handle is a short name you can hold, such as `@jon`. It is a Doginals inscription. The winner is the register with the lowest priority key (§5.6): a reveal whose commit landed at most 30 blocks earlier can beat a reveal that confirmed first. The holder of that inscription output is the owner. Spending the output transfers the handle.
 
 The normal mint is plain text. The inscription body **is** `@jon`. A later `op:"config"` from that holder sets a pay-to address, a site, or a bio. The config is not a second handle.
 
